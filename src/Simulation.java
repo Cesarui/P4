@@ -26,7 +26,7 @@ public class Simulation {
                 System.out.println("LESSS GOO, you got it right!! Moving on now...\n");
             }
             else {
-                System.out.println("You got it wrong:( The right answer was " + room.getAnswer());
+                System.out.println("You got it wrong:(");
             }
 
             System.out.println("Room solved: " + room.isSolved());
