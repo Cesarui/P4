@@ -21,6 +21,9 @@ public class Room {
         this.answer = answer;
         this.solved = false;
     }
+    public String getAnswer() {
+        return answer;
+    }
 
     public int getRoomNumber() {
         return roomNumber;
