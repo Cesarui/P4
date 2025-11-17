@@ -70,6 +70,7 @@ public class Simulation {
      * GUI calls after correct answer to move to next room
      */
     public boolean moveToNextRoom() {
+        player.numOfIncorrectGuesses = 0; // Reset incorrect guesses for new room
         if (currentRoomNumber < 10) {
             currentRoomNumber++;
             return true;
