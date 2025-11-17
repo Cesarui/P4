@@ -17,7 +17,7 @@ public class Simulation {
         for (Room room : rooms) {
             System.out.println("You are in Room " + room.getRoomNumber());
             System.out.println("Riddle: " + room.getRiddle());
-            System.out.println("Your guess: ");
+            System.out.print("Your guess: ");
 
             String guess = scanner.nextLine();
             boolean correct = room.checkAnswer(guess);
