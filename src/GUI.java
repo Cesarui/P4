@@ -3,6 +3,7 @@
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -12,6 +13,7 @@ public class GUI extends JFrame{
     private Player player_1;
     private JTextArea text_area;
     private JTextField field_answer;
+    private JLabel room_label;
     private JButton button_submit;
     private JButton button_hint;
     private JButton button_skip;
@@ -23,6 +25,7 @@ public class GUI extends JFrame{
         setButtons();
         field_answer = new JTextField();
         text_area = new JTextArea();
+        room_label = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
@@ -40,7 +43,7 @@ public class GUI extends JFrame{
         
         //Game begins
         sim.startGame("Player 1"); // Testing with default name
-        text_area.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
+        room_label.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
 
 
             // Action listeners for buttons (If it's a new room set visible for skip button to false)
