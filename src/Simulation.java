@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Game logic - GUI team calls these methods
+ * Game logic - GUI calls these methods
  */
 public class Simulation {
 
