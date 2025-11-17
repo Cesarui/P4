@@ -1,65 +1,53 @@
 //Andre Larrazabal
 //package P4.src;
 
-import java.awt.CardLayout;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
-public class GUI {
+public class GUI extends JFrame{
     //ATTRIBUTES
-    Player player_1;
-    JFrame frame;
-    JTextArea text_area;
-    JButton button_start;
-    JButton button_skip;
-    JPanel cardPanel;
-    JPanel scene_menu;
-    JPanel scene_hallway;
-    JPanel scene_room;
+    private final Simulation sim;
+    private Player player_1;
+    private JTextArea text_area;
+    private JTextField field_answer;
+    private JButton button_hint;
+    private JButton button_skip;
+
 
     public GUI() {
-        frame = new JFrame();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(750, 500);
+        setButtons();
+        field_answer = new JTextField();
         text_area = new JTextArea();
-        button_start = new JButton("Start");
-        button_skip = new JButton("Skip");
-        cardPanel = new JPanel(new CardLayout());
-        scene_menu = new JPanel();
-        scene_hallway = new JPanel();
-        scene_room = new JPanel();
+        sim = new Simulation();
     }
 
     /**
      * Opens the GUI for the player to play the game
      */
     public void openGui() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setButtons();
-        cardPanel.add(menu(), "menu");
-        cardPanel.add(game(), "game");
-        frame.setSize(600, 600);
-        frame.setVisible(true);
-    }
+        text_area.setBounds(0, 0, 750, 375);
+        setLayout(null);
+        add(text_area);
 
-    private JPanel menu() {
-        scene_menu.setLayout(null);
-        scene_menu.setBounds(0, 0, 600, 600);
-
-
-        return scene_menu;
+        field_answer.setBounds(100, 400, 100, 25);
+        add(field_answer);
+        setVisible(true);
     }
     
-    private JPanel game() {
-        return scene_room;
-    }
     /**
      * Private helper function to set up the buttons for the game
      */
     private void setButtons() {
-        button_start.setBounds(200, 400, 100, 25);
-        frame.add(button_start);
+        button_hint = new JButton("Hint");
+        button_skip = new JButton("Skip");
+        button_skip.setBounds(525, 400, 100, 25);
+        button_hint.setBounds(400, 400, 100, 25);
+        add(button_hint);
+        add(button_skip);
     }
 
 }
