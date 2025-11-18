@@ -14,12 +14,11 @@ import javax.swing.JTextField;
 public class GUI extends JFrame{
     //ATTRIBUTES
     private final Simulation sim;
-    private Player player1;
-    private JTextArea text_area;
     private JTextField field_answer;
     private JLabel label_room;
     private JLabel label_riddle;
     private JLabel label_hint;
+    private JLabel label_incorrect;
     private JLabel label_player1;
     private JLabel label_bot1;
     private JLabel label_bot2;
@@ -28,16 +27,15 @@ public class GUI extends JFrame{
     private JButton button_skip;
 
     //CONSTRUCTOR
-    
     public GUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(750, 500);
         setButtons();
         field_answer = new JTextField();
-        text_area = new JTextArea();
         label_room = new JLabel();
         label_riddle = new JLabel();
         label_hint = new JLabel();
+        label_incorrect = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
@@ -56,11 +54,11 @@ public class GUI extends JFrame{
 
         sim.simulateBots();
 
-        text_area.setBounds(0, 0, 750, 375);
         field_answer.setBounds(100, 400, 200, 25);
         label_room.setBounds(0, 0, 600, 25);
         label_riddle.setBounds(200, 200, 600, 25);
         label_hint.setBounds(200, 300, 600, 25);
+        label_incorrect.setBounds(100, 380, 200, 25);
 
         label_hint.setVisible(false);
 
@@ -71,6 +69,12 @@ public class GUI extends JFrame{
      * Starts the game and sets up action listeners for buttons
      */
     private void startGame() {
+        add(field_answer);
+        add(label_room);
+        add(label_riddle);
+        add(label_hint);
+        add(label_incorrect);
+
         updateRoom();
         // Action listeners for buttons (If it's a new room set visible for skip button to false)
         button_submit.addActionListener(e -> {
@@ -78,18 +82,27 @@ public class GUI extends JFrame{
             boolean correct = sim.checkGuess(guess);
 
             //Checks to see if the guess was correct
-            if (correct) {
+            
+            if (sim.hasPlayerWon()) {
                 sim.moveToNextRoom();
                 updateRoom();
-                if (sim.hasPlayerWon()) {
-                    endGame();
-                }
+                //endGame();
             } else {
-
-                if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
-                    button_skip.setVisible(true);
-                }
+                if (correct) {
+                    sim.moveToNextRoom();
+                    updateRoom();
+                } else {
+                    label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
+                    if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
+                        button_skip.setVisible(true);
+                    }
+                }      
             }
+
+            if (sim.getCurrentRoomNumber() == 20 && sim.getCurrentRoom().isSolved()) {
+                endGame();
+            }
+
         });
 
         button_hint.addActionListener(e -> { // if player requests hint, show first letter of answer and add penalty
@@ -103,22 +116,16 @@ public class GUI extends JFrame{
         });
 
         button_skip.addActionListener(e -> {
+            sim.getPlayer().addTimePenalty(120);
             sim.moveToNextRoom();
             updateRoom();
         });
-        
-        add(field_answer);
-        add(label_room);
-        add(label_riddle);
-        add(label_hint);
     }
 
     /**
      * Ends the game and shows the results screen
      */
     private void endGame() {
-        label_riddle.setText("Congratulations! You've made it out!");
-        label_room.setText("Outside the Riddle Rooms");
         sim.finishGame();
         showResultScreen();
     }
@@ -133,6 +140,7 @@ public class GUI extends JFrame{
         remove(button_skip);
         remove(label_riddle);
         remove(label_hint);
+        remove(label_incorrect);
 
         label_room.setText("Game Complete!");
         label_room.setBounds(250, 30, 300, 40);
@@ -211,6 +219,7 @@ public class GUI extends JFrame{
         label_room.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()));
         label_riddle.setText(sim.getCurrentRiddle());
         label_hint.setText("");
+        label_incorrect.setText("Incorrect Guesses: 0");
     }
 
     /**

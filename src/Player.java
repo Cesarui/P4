@@ -4,7 +4,7 @@ public class Player {
     int numOfIncorrectGuesses;
     int secondsElapsed;
     int numOfHintsUsed;
-    String riddleAnswer;
+    private String riddleAnswer;
     private long startTime;
     private long endTime;
 

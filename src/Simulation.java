@@ -2,9 +2,8 @@
 //Gabriel
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Random;
 
 /**
  * Game logic - GUI calls these methods
@@ -175,7 +174,7 @@ public class Simulation {
             currentRoom.setHint("");
         }
 
-        if (currentRoomNumber < 10) {
+        if (currentRoomNumber < 20) {
             currentRoomNumber++;
             return true;
         }
