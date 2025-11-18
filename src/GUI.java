@@ -1,11 +1,9 @@
 //Andre Larrazabal
+//Gabriel Luciano
 //package P4.src;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 public class GUI extends JFrame{
     //ATTRIBUTES
@@ -32,6 +30,7 @@ public class GUI extends JFrame{
         text_area = new JTextArea();
         label_room = new JLabel();
         label_riddle = new JLabel();
+        label_hint = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
@@ -43,12 +42,18 @@ public class GUI extends JFrame{
     public void openGui() {
         // Sets up bot players
         sim.startGame("Player 1"); // Testing with default name
-        sim.addBot("1");
-        sim.addBot("2");
+        sim.addBot("Bot 1");
+        sim.addBot("Bot 2");
+
+        sim.simulateBots();
+
         text_area.setBounds(0, 0, 750, 375);
         field_answer.setBounds(100, 400, 200, 25);
         label_room.setBounds(0, 0, 600, 25);
         label_riddle.setBounds(200, 200, 600, 25);
+        label_hint.setBounds(200, 300, 600, 25);
+
+        label_hint.setVisible(false);
 
         startGame();
     }
@@ -76,7 +81,13 @@ public class GUI extends JFrame{
         });
 
         button_hint.addActionListener(e -> { // if player requests hint, show first letter of answer and add penalty
-            sim.getPlayer().getHint();
+            String hint = sim.showHint(sim.getCurrentRoom());
+            label_hint.setVisible(true);
+            label_hint.setText(hint);
+
+            if (!hint.contains("_")) {
+                button_hint.setEnabled(false);
+            }
         });
 
         button_skip.addActionListener(e -> {
@@ -85,17 +96,95 @@ public class GUI extends JFrame{
         });
         
         add(field_answer);
-        //add(text_area);
         add(label_room);
         add(label_riddle);
+        add(label_hint);
     }
 
     private void endGame() {
         label_riddle.setText("Congratulations! You've made it out!");
         label_room.setText("Outside the Riddle Rooms");
+        label_hint.setVisible(false);
         button_submit.setEnabled(false);
         button_hint.setEnabled(false);
         button_skip.setEnabled(false);
+        sim.finishGame();
+        showResultScreen();
+    }
+
+    private void showResultScreen() {
+        remove(field_answer);
+        remove(button_submit);
+        remove(button_hint);
+        remove(button_skip);
+        remove(label_riddle);
+        remove(label_hint);
+
+        label_room.setText("Game Complete!");
+        label_room.setBounds(250, 30, 300, 40);
+        label_room.setFont(new Font("Arial", Font.BOLD, 28));
+
+        JTextArea resultsArea = new JTextArea();
+        resultsArea.setBounds(150, 100, 450, 250);
+        resultsArea.setEditable(false);
+        resultsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        String results = "";
+        results += "\n   FINAL RESULTS\n";
+        results = results + "   ===================================\n\n";
+
+        int playerTime = sim.getPlayer().getTotalTime();
+        results = results + "   " + sim.getPlayer().getName() + ": " + playerTime + " seconds\n";
+
+        int botNum = 1;
+        for (Bot bot : sim.getBots()) {
+            results = results + "   Bot " + botNum + ": " + bot.getTotalTime() + " seconds\n";
+            botNum++;
+        }
+
+        results = results + "\n   ===================================\n";
+
+        int minTime = playerTime;
+        String winner = sim.getPlayer().getName();
+
+        for(Bot bot : sim.getBots()) {
+            if (bot.getTotalTime() < minTime) {
+                minTime = bot.getTotalTime();
+                winner = bot.getName();
+            }
+        }
+
+        results = results + "\n   Winner: " + winner + "!\n";
+        results = results + "   Completetion Time: " + minTime + " seconds\n\n";
+
+        results = results + "   Your Stats:\n";
+        results = results + "   - Hints Used: " + sim.getPlayer().getNumOfIncorrectGuesses() + "\n";
+        results = results + "   - Time Penalties: " + sim.getPlayer().getSecondsElapsed() + " seconds\n";
+
+        resultsArea.setText(results);
+        add(resultsArea);
+
+        JScrollPane scrollPane = new JScrollPane(resultsArea);
+        scrollPane.setBounds(150, 100, 450, 250);
+        add(scrollPane);
+
+        JButton playAgainButton = new JButton("Play Again");
+        playAgainButton.setBounds(250, 380, 120, 40);
+        playAgainButton.setFont(new Font("Arial", Font.BOLD, 14));
+        playAgainButton.addActionListener(e -> {
+           dispose();
+           new GUI().openGui();
+        });
+        add(playAgainButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(390, 380, 120, 40);
+        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        exitButton.addActionListener(e -> System.exit(0));
+        add(exitButton);
+
+        revalidate();
+        repaint();
     }
 
     /**
@@ -103,9 +192,11 @@ public class GUI extends JFrame{
      */
     private void updateRoom() {
         button_skip.setVisible(false);
+        button_hint.setEnabled(true);
         field_answer.setText("");
         label_room.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()));
         label_riddle.setText(sim.getCurrentRiddle());
+        label_hint.setText("");
     }
 
     /**

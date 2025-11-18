@@ -5,8 +5,8 @@ public class Room {
     private final int roomNumber;
     private final String riddle;
     private final String answer;
-
     private boolean solved;
+    private String currentHint;
 
     /**
      * Constructs a Room with a room number, riddle and it's answer.
@@ -20,6 +20,15 @@ public class Room {
         this.riddle = riddle;
         this.answer = answer;
         this.solved = false;
+        this.currentHint = "";
+    }
+
+    public String getHint() {
+        return currentHint;
+    }
+
+    public void setHint(String currentHint) {
+        this.currentHint = currentHint;
     }
 
     public int getRoomNumber() {
@@ -28,6 +37,10 @@ public class Room {
 
     public String getRiddle() {
         return riddle;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     public boolean isSolved() {

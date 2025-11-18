@@ -5,6 +5,8 @@ public class Player {
     int secondsElapsed;
     int numOfHintsUsed;
     String riddleAnswer;
+    private long startTime;
+    private long endTime;
 
     /** Constructor for Player object, sets the number of incorrectGuesses,
      * secondsElapsed, and the number of hints used to zero, doing so makes a clean slate for the player
@@ -15,21 +17,15 @@ public class Player {
         numOfIncorrectGuesses = 0;
         numOfHintsUsed = 0;
         secondsElapsed = 0;
+        this.startTime = System.currentTimeMillis();
+    }
+    public void finishGame() {
+        this.endTime = System.currentTimeMillis();
     }
 
-    /** Takes in the correct answer to the current riddle and stores it locally.
-     * @param givenRiddleAnswer is the correct answer to the current riddle, this is not know by the user
-     * and is used to check the users guess for correctness
-     */
-    private void getAnswer(String givenRiddleAnswer) {
-        riddleAnswer = givenRiddleAnswer;
-    }
-    /** Takes in users guess as a string and compares it to the answer of the riddle, returns typical boolean outputs
-     * @param givenUserGuess is the users guess
-     * @return returns true if the users guess matches the answer for the riddle.
-     */
-    public boolean makeGuess(String givenUserGuess) {
-        return givenUserGuess.equals(riddleAnswer);
+    public int getTotalTime() {
+        long actualTime = (endTime - startTime) / 1000;
+        return (int) actualTime + secondsElapsed;
     }
 
     /** When the user clicks the "get hint" button, it will administer a time penalty
@@ -37,8 +33,12 @@ public class Player {
      * hints used by 1.
      */
     public void getHint () {
-        secondsElapsed += 60;
+        addTimePenalty(60);
         numOfHintsUsed++;
+    }
+
+    public void addTimePenalty (int seconds) {
+        secondsElapsed += seconds;
     }
 
     /** Basic getter for the Players elapsed time statistic.
@@ -53,6 +53,10 @@ public class Player {
      */
     public int getNumOfIncorrectGuesses() {
         return numOfIncorrectGuesses;
+    }
+
+    public int getNumOfHintsUsed() {
+        return numOfHintsUsed;
     }
 
     /** Basic getter for the Players name

@@ -1,4 +1,8 @@
+//Cesar
+//Gabriel
+
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,9 +15,11 @@ public class Simulation {
     private Player player;
     private List<Bot> bots;
     private int currentRoomNumber;
+    private ArrayList<Integer> listOfRevealedHintIndexes;
 
     public Simulation() {
         roomMap = new RoomHashMap();
+        listOfRevealedHintIndexes = new ArrayList<>();
         bots = new ArrayList<>();
         currentRoomNumber = 1;
         createRooms();
@@ -33,6 +39,85 @@ public class Simulation {
         roomMap.put(8, new Room(8, "What is always in front of you but can't be seen?", "future"));
         roomMap.put(9, new Room(9, "What can you break without picking it up or touching it?", "promise"));
         roomMap.put(10, new Room(10, "What goes up but never comes down?", "age"));
+    }
+
+    public void finishGame() {
+        player.finishGame();
+    }
+
+    public void simulateBots() {
+        for (Bot bot : bots) {
+            simulateBot(bot);
+        }
+    }
+
+    private void simulateBot(Bot bot) {
+        for (int roomNum = 1; roomNum <= 10; roomNum++) {
+            Room room = roomMap.get(roomNum);
+            String[] guesses = getGuessPool(roomNum);
+
+            boolean solved = false;
+            while (!solved) {
+                String result = bot.attempt(room, guesses);
+                if (result.contains("solved")) {
+                    solved = true;
+                }
+            }
+        }
+        bot.finishGame();
+    }
+
+    public Room getCurrentRoom () {
+        return roomMap.get(currentRoomNumber);
+    }
+
+    public String showHint(Room givenRoom) {
+        String answer = givenRoom.getAnswer();
+
+        if (listOfRevealedHintIndexes.size() >= answer.length()) {
+            return givenRoom.getHint();
+        }
+        String currentHint = givenRoom.getHint();
+        System.out.println("Current hint from room: '" + currentHint + "'"); //debug
+
+        if (currentHint == null || currentHint.isEmpty()) {
+            currentHint = createHiddenAnswer(answer.length());
+            System.out.println("Created new hidden answer: '" + currentHint + "'");
+        }
+
+        //gets random index that hasn't been chosen yet (ONLY APPLIES TO CURRENT RIDDLE)
+        int indexToBeRevealed = getIndexToBeRevealed(answer.length());
+
+        char revealedChar = answer.charAt(indexToBeRevealed);
+        StringBuilder hiddenAnswerBuilder = new StringBuilder(currentHint);
+        hiddenAnswerBuilder.setCharAt(indexToBeRevealed, revealedChar);
+
+        String updatedHint = hiddenAnswerBuilder.toString();
+        givenRoom.setHint(updatedHint);
+
+        player.getHint();
+
+        if (listOfRevealedHintIndexes.size() == answer.length()) {
+            player.addTimePenalty(120);
+        }
+        return updatedHint;
+    }
+
+    private int getIndexToBeRevealed(int size) {
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(0, size);
+
+        if (listOfRevealedHintIndexes.contains(randomIndex)) {
+            return getIndexToBeRevealed(size);
+        }
+        else {
+            listOfRevealedHintIndexes.add(randomIndex);
+            return randomIndex;
+        }
+    }
+
+    private String createHiddenAnswer(int length) {
+        return "_" + "_".repeat(length - 1);
     }
 
     /**
@@ -71,6 +156,12 @@ public class Simulation {
      */
     public boolean moveToNextRoom() {
         player.numOfIncorrectGuesses = 0; // Reset incorrect guesses for new room
+        listOfRevealedHintIndexes.clear(); // Clears the list of the revealed letters
+        Room currentRoom = roomMap.get(currentRoomNumber);
+        if (currentRoom != null) {
+            currentRoom.setHint("");
+        }
+
         if (currentRoomNumber < 10) {
             currentRoomNumber++;
             return true;
@@ -159,10 +250,8 @@ public class Simulation {
         };
         return pools[roomNum - 1];
     }
-
-    /**
-     * Console test - This can be ignored, just trying to see how it all looks.
-     */
+    /*
+    //Console test - This can be ignored, just trying to see how it all looks.
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Simulation simulation = new Simulation();
@@ -195,4 +284,5 @@ public class Simulation {
 
         scanner.close();
     }
+    */
 }

@@ -6,10 +6,15 @@ public class Bot extends Player {
     private final Random rng = new Random();
     private int attemptsInRoom = 0;
     private boolean solvedCurrentRoom = false;
+    private long startTime = 0;
+    private long endTime = 0;
+    private static final int timePerGuess = 5;
+
 
     // The code creates the bot opponent.
     public Bot(String name) {
         super(name); // Call Player constructor
+        this.startTime = System.currentTimeMillis();
     }
 
     // This code resets the bot state when moving to a new room.
@@ -32,21 +37,25 @@ public class Bot extends Player {
 
         if (correct) {
             solvedCurrentRoom = true;
-            return getName() + " guessed \"" + guess + "\" and solved Room "
+            String result = getName() + " guessed \"" + guess + "\" and solved Room "
                     + room.getRoomNumber() + " in " + attemptsInRoom + " attempts!";
+            resetForNewRoom();
+            return result;
         } else {
             numOfIncorrectGuesses++;
             return getName() + " guessed \"" + guess + "\" and got it wrong.";
         }
     }
 
-    // The code returns true if the bot already solved the answer.
-    public boolean hasSolvedCurrentRoom() {
-        return solvedCurrentRoom;
+    @Override
+    public void finishGame() {
+        this.endTime =  System.currentTimeMillis();
     }
 
-    public int getAttemptsInRoom() {
-        return attemptsInRoom;
+    @Override
+    public int getTotalTime() {
+        long actualTime = (endTime - startTime) / 1000;
+        return (int) actualTime+ (numOfIncorrectGuesses * timePerGuess);
     }
 
     @Override
