@@ -14,6 +14,7 @@ public class GUI extends JFrame{
     private JTextArea text_area;
     private JTextField field_answer;
     private JLabel label_room;
+    private JLabel label_riddle;
     private JLabel label_hint;
     private JLabel label_player1;
     private JLabel label_bot1;
@@ -30,6 +31,7 @@ public class GUI extends JFrame{
         field_answer = new JTextField();
         text_area = new JTextArea();
         label_room = new JLabel();
+        label_riddle = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
@@ -46,48 +48,66 @@ public class GUI extends JFrame{
         text_area.setBounds(0, 0, 750, 375);
         field_answer.setBounds(100, 400, 200, 25);
         label_room.setBounds(0, 0, 600, 25);
+        label_riddle.setBounds(200, 200, 600, 25);
 
-        gameplayLoop();
+        startGame();
     }
     
-    private void gameplayLoop() {
-        button_skip.setVisible(false);
-        field_answer.setText("");
-        label_room.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
+    private void startGame() {
+        updateRoom();
+        // Action listeners for buttons (If it's a new room set visible for skip button to false)
+        button_submit.addActionListener(e -> {
+            String guess = field_answer.getText();
+            boolean correct = sim.checkGuess(guess);
 
-
-            // Action listeners for buttons (If it's a new room set visible for skip button to false)
-            button_submit.addActionListener(e -> {
-                String guess = field_answer.getText();
-                boolean correct = sim.checkGuess(guess);
-
-                //Checks to see if the guess was correct
-                if (correct) {
-                    sim.moveToNextRoom();
-                    gameplayLoop();
-                } else {
-
-                    if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
-                        button_skip.setVisible(true);
-                    }
-                }
-            });
-
-            button_hint.addActionListener(e -> { // if player requests hint, show first letter of answer and add penalty
-                player1.getHint();
-            });
-
-            button_skip.addActionListener(e -> {
+            //Checks to see if the guess was correct
+            if (correct) {
                 sim.moveToNextRoom();
-                text_area.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
-            });
+                updateRoom();
+                if (sim.hasPlayerWon()) {
+                    endGame();
+                }
+            } else {
+
+                if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
+                    button_skip.setVisible(true);
+                }
+            }
+        });
+
+        button_hint.addActionListener(e -> { // if player requests hint, show first letter of answer and add penalty
+            sim.getPlayer().getHint();
+        });
+
+        button_skip.addActionListener(e -> {
+            sim.moveToNextRoom();
+            updateRoom();
+        });
         
-
-
         add(field_answer);
         //add(text_area);
         add(label_room);
+        add(label_riddle);
     }
+
+    private void endGame() {
+        label_riddle.setText("Congratulations! You've made it out!");
+        label_room.setText("Outside the Riddle Rooms");
+        button_submit.setEnabled(false);
+        button_hint.setEnabled(false);
+        button_skip.setEnabled(false);
+    }
+
+    /**
+     * Updates the room information in the GUI
+     */
+    private void updateRoom() {
+        button_skip.setVisible(false);
+        field_answer.setText("");
+        label_room.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()));
+        label_riddle.setText(sim.getCurrentRiddle());
+    }
+
     /**
      * Private helper function to set up the buttons for the game
      */
