@@ -13,10 +13,11 @@ public class GUI extends JFrame{
     private Player player1;
     private JTextArea text_area;
     private JTextField field_answer;
-    private JLabel room_label;
-    private JLabel player1_label;
-    private JLabel bot1_label;
-    private JLabel bot2_label;
+    private JLabel label_room;
+    private JLabel label_hint;
+    private JLabel label_player1;
+    private JLabel label_bot1;
+    private JLabel label_bot2;
     private JButton button_submit;
     private JButton button_hint;
     private JButton button_skip;
@@ -28,7 +29,7 @@ public class GUI extends JFrame{
         setButtons();
         field_answer = new JTextField();
         text_area = new JTextArea();
-        room_label = new JLabel();
+        label_room = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
@@ -44,23 +45,18 @@ public class GUI extends JFrame{
         sim.addBot("2");
         text_area.setBounds(0, 0, 750, 375);
         field_answer.setBounds(100, 400, 200, 25);
-        room_label.setBounds(0, 0, 600, 25);
+        label_room.setBounds(0, 0, 600, 25);
 
         gameplayLoop();
     }
     
     private void gameplayLoop() {
+        button_skip.setVisible(false);
         field_answer.setText("");
-        room_label.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
+        label_room.setText("Room " + String.valueOf(sim.getCurrentRoomNumber()) + ": " + sim.getCurrentRiddle());
 
 
             // Action listeners for buttons (If it's a new room set visible for skip button to false)
-            // if (player1.getNumOfIncorrectGuesses() > 2) {
-            //     button_skip.setVisible(true);
-            // } else {
-            //     button_skip.setVisible(false);
-            // }
-
             button_submit.addActionListener(e -> {
                 String guess = field_answer.getText();
                 boolean correct = sim.checkGuess(guess);
@@ -70,8 +66,8 @@ public class GUI extends JFrame{
                     sim.moveToNextRoom();
                     gameplayLoop();
                 } else {
-                    player1.numOfIncorrectGuesses++;
-                    if (player1.numOfIncorrectGuesses > 2) { // if number of incorrect guesses > 2, allow skip
+
+                    if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
                         button_skip.setVisible(true);
                     }
                 }
@@ -90,7 +86,7 @@ public class GUI extends JFrame{
 
         add(field_answer);
         //add(text_area);
-        add(room_label);
+        add(label_room);
     }
     /**
      * Private helper function to set up the buttons for the game
