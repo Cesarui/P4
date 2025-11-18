@@ -2,8 +2,14 @@
 //Gabriel Luciano
 //package P4.src;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class GUI extends JFrame{
     //ATTRIBUTES
@@ -21,7 +27,8 @@ public class GUI extends JFrame{
     private JButton button_hint;
     private JButton button_skip;
 
-
+    //CONSTRUCTOR
+    
     public GUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(750, 500);
@@ -35,6 +42,8 @@ public class GUI extends JFrame{
         setLayout(null);
         setVisible(true);
     }
+
+    //METHODS
 
     /**
      * Opens the GUI for the player to play the game
@@ -58,6 +67,9 @@ public class GUI extends JFrame{
         startGame();
     }
     
+    /**
+     * Starts the game and sets up action listeners for buttons
+     */
     private void startGame() {
         updateRoom();
         // Action listeners for buttons (If it's a new room set visible for skip button to false)
@@ -101,17 +113,19 @@ public class GUI extends JFrame{
         add(label_hint);
     }
 
+    /**
+     * Ends the game and shows the results screen
+     */
     private void endGame() {
         label_riddle.setText("Congratulations! You've made it out!");
         label_room.setText("Outside the Riddle Rooms");
-        label_hint.setVisible(false);
-        button_submit.setEnabled(false);
-        button_hint.setEnabled(false);
-        button_skip.setEnabled(false);
         sim.finishGame();
         showResultScreen();
     }
 
+    /**
+     * Displays the result screen with final scores and options to play again or exit
+     */
     private void showResultScreen() {
         remove(field_answer);
         remove(button_submit);
