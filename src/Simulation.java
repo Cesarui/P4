@@ -41,6 +41,19 @@ public class Simulation {
         roomMap.put(10, new Room(10, "What goes up but never comes down?", "age"));
     }
 
+    private void createBonusRooms() {
+        roomMap.put(11, new Room(11, "What has hands but cannot clap?", "clock"));
+        roomMap.put(12, new Room(12, "What has a head and tail but no body?", "coin"));
+        roomMap.put(13, new Room(13, "What can travel around the world while staying in a corner?", "stamp"));
+        roomMap.put(14, new Room(14, "What has a neck but no head?", "bottle"));
+        roomMap.put(15, new Room(15, "What gets sharper the more you use it?", "brain"));
+        roomMap.put(16, new Room(16, "What can run but never walks?", "water"));
+        roomMap.put(17, new Room(17, "What has cities but no houses?", "map"));
+        roomMap.put(18, new Room(18, "What has a ring but no finger?", "phone"));
+        roomMap.put(19, new Room(19, "What flies without wings?", "time"));
+        roomMap.put(20, new Room(20, "What has teeth but cannot bite?", "comb"));
+    }
+
     public void finishGame() {
         player.finishGame();
     }
@@ -206,8 +219,19 @@ public class Simulation {
     public boolean hasPlayerWon() {
         if (currentRoomNumber == 10) {
             Room finalRoom = roomMap.get(10);
-            return finalRoom.isSolved();
+            if (finalRoom.isSolved()) {
+                // Player beat first 10 rooms, add the bonus rooms
+                System.out.println("OH YEAAA! Bonus rooms unlocked:)");
+                createBonusRooms(); // This will trigger rehash when you add room 13
+                return false; // Game continues with bonus rooms
+            }
         }
+
+        if (currentRoomNumber == 20) {
+            Room finalRoom = roomMap.get(20);
+            return finalRoom.isSolved(); // True win condition
+        }
+
         return false;
     }
 
