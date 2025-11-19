@@ -104,7 +104,9 @@ public class GUI extends JFrame{
                 } else {
                     guess_wrong = true;
 
-                    if (sim.getCurrentRoomNumber() > 10 && guess_wrong) {
+                    if (sim.getCurrentRoomNumber() > 10 && guess_wrong) { // if in bonus room and guess is wrong, end game
+                        endGame();
+                    } else if (sim.getCurrentRoomNumber() == 10 && sim.getCurrentRoom().isSolved() && guess_wrong) { // if you guess wrong from rooms 1-10 and solved room 10, end game
                         endGame();
                     }
 
@@ -239,7 +241,7 @@ public class GUI extends JFrame{
         label_incorrect.setText("Incorrect Guesses: 0");
 
         if (sim.getCurrentRoomNumber() > 10) {
-            label_bonus.setText("Bonus Rooms Unlocked!! If You Guess Wrong, the Game Ends!");
+            label_bonus.setText("Well Done!!! Bonus Rooms Unlocked!! If You Guess Wrong, the Game Ends!");
         }
     }
 
