@@ -94,6 +94,11 @@ public class Simulation {
         bot.finishGame();
     }
 
+    /**
+     * Gets the current room the player is in.
+     *
+     * @return the current Room object
+     */
     public Room getCurrentRoom () {
         return roomMap.get(currentRoomNumber);
     }
