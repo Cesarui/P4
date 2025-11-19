@@ -5,4 +5,3 @@ public class Game {
         gui.openGui();
     }
 }
-
