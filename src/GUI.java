@@ -145,6 +145,7 @@ public class GUI extends JFrame{
         remove(label_riddle);
         remove(label_hint);
         remove(label_incorrect);
+        remove(label_bonus);
 
         label_room.setText("Game Complete!");
         label_room.setBounds(250, 30, 300, 40);
