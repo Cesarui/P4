@@ -140,6 +140,13 @@ public class Simulation {
         return updatedHint;
     }
 
+    /**
+     * Picks a random index that hasn't been revealed yet.
+     * Uses recursion to find an unused index.
+     *
+     * @param size the length of the answer
+     * @return a random index that hasn't been used
+     */
     private int getIndexToBeRevealed(int size) {
         Random rand = new Random();
         int randomIndex = rand.nextInt(0, size);
