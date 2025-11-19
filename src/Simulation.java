@@ -103,6 +103,13 @@ public class Simulation {
         return roomMap.get(currentRoomNumber);
     }
 
+    /**
+     * Shows a hint by revealing one random letter of the answer.
+     * Adds a time penalty and tracks which letters have been revealed.
+     *
+     * @param givenRoom the room to show a hint for
+     * @return a string with one more letter revealed (e.g., "_i_n_")
+     */
     public String showHint(Room givenRoom) {
         String answer = givenRoom.getAnswer();
 
