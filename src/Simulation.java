@@ -40,6 +40,9 @@ public class Simulation {
         roomMap.put(10, new Room(10, "What goes up but never comes down?", "age"));
     }
 
+    /**
+     * Creates 10 more rooms for bonus round (causes rehash)
+     */
     private void createBonusRooms() {
         roomMap.put(11, new Room(11, "What has hands but cannot clap?", "clock"));
         roomMap.put(12, new Room(12, "What has a head and tail but no body?", "coin"));
