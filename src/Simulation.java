@@ -63,6 +63,10 @@ public class Simulation {
         player.finishGame();
     }
 
+    /**
+     * goes through all fo the bots in the bots arrayList and
+     * calls the method simulateBot() with said bot as a parameter
+     */
     public void simulateBots() {
         for (Bot bot : bots) {
             simulateBot(bot);
