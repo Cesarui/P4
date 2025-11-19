@@ -1,4 +1,4 @@
-//Andre Larrazabal
+//Andrew Larrazabal
 //Gabriel Luciano
 //package P4.src;
 
@@ -26,6 +26,7 @@ public class GUI extends JFrame{
     private JButton button_submit;
     private JButton button_hint;
     private JButton button_skip;
+    private boolean guess_wrong;
 
     //CONSTRUCTOR
     public GUI() {
@@ -41,6 +42,7 @@ public class GUI extends JFrame{
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
+        guess_wrong = false;
     }
 
     //METHODS
@@ -88,14 +90,24 @@ public class GUI extends JFrame{
             //Checks to see if the guess was correct
             
             if (sim.hasPlayerWon()) {
-                sim.moveToNextRoom();
-                updateRoom();
-                //endGame();
+                if (!guess_wrong) {
+                    sim.moveToNextRoom();
+                    updateRoom();
+                    //endGame();
+                } else {
+                    endGame();
+                }
             } else {
                 if (correct) {
                     sim.moveToNextRoom();
                     updateRoom();
                 } else {
+                    guess_wrong = true;
+
+                    if (sim.getCurrentRoomNumber() > 10 && guess_wrong) {
+                        endGame();
+                    }
+
                     label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
                     if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
                         button_skip.setVisible(true);
@@ -227,7 +239,7 @@ public class GUI extends JFrame{
         label_incorrect.setText("Incorrect Guesses: 0");
 
         if (sim.getCurrentRoomNumber() > 10) {
-            label_bonus.setText("Bonus Rooms Unlocked!!");
+            label_bonus.setText("Bonus Rooms Unlocked!! If You Guess Wrong, the Game Ends!");
         }
     }
 
