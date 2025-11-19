@@ -72,7 +72,12 @@ public class Simulation {
             simulateBot(bot);
         }
     }
-
+    /**
+     * Simulates a bot completing all 10 rooms.
+     * The bot keeps guessing until it solves each room.
+     *
+     * @param bot the bot to simulate
+     */
     private void simulateBot(Bot bot) {
         for (int roomNum = 1; roomNum <= 10; roomNum++) {
             Room room = roomMap.get(roomNum);
@@ -100,11 +105,9 @@ public class Simulation {
             return givenRoom.getHint();
         }
         String currentHint = givenRoom.getHint();
-        System.out.println("Current hint from room: '" + currentHint + "'"); //debug
 
         if (currentHint == null || currentHint.isEmpty()) {
             currentHint = createHiddenAnswer(answer.length());
-            System.out.println("Created new hidden answer: '" + currentHint + "'");
         }
 
         //gets random index that hasn't been chosen yet (ONLY APPLIES TO CURRENT RIDDLE)
