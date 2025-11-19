@@ -89,7 +89,7 @@ public class GUI extends JFrame{
 
 
             // If player has gone through 10 rooms, bonus room is activated (if they answer incorrectly, the game ends)
-            if (sim.hasPlayerWon()) {
+            if (sim.getCurrentRoomNumber() > 10) {
                 if (!guess_wrong) {
                     sim.moveToNextRoom();
                     updateRoom();
@@ -235,6 +235,7 @@ public class GUI extends JFrame{
         label_riddle.setText(sim.getCurrentRiddle());
         label_hint.setText("");
         label_incorrect.setText("Incorrect Guesses: 0");
+        guess_wrong = false;
 
         if (sim.getCurrentRoomNumber() > 10) {
             label_bonus.setText("Bonus Room!!");
