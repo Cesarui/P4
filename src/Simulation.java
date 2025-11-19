@@ -160,6 +160,12 @@ public class Simulation {
         }
     }
 
+    /**
+     * Creates a string of underscores to hide the answer.
+     *
+     * @param length how many underscores to create
+     * @return a string of underscores (e.g., "_____")
+     */
     private String createHiddenAnswer(int length) {
         return "_" + "_".repeat(length - 1);
     }
