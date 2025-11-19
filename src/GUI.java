@@ -82,7 +82,8 @@ public class GUI extends JFrame{
         add(label_bonus);
 
         updateRoom();
-        // Action listeners for buttons (If it's a new room set visible for skip button to false)
+        //Action listeners for buttons (If it's a new room set visible for skip button to false)
+        //SOLUTION TO THE RIDDLES ARE FOUND IN THE SIMULATION CLASS
         button_submit.addActionListener(e -> {
             String guess = field_answer.getText();
             boolean correct = sim.checkGuess(guess);
@@ -102,6 +103,7 @@ public class GUI extends JFrame{
                     sim.moveToNextRoom();
                     updateRoom();
                 } else {
+                    //REHASH OCCURS WHEN BONUS ROOMS ARE UNLOCKED
                     guess_wrong = true;
 
                     if (sim.getCurrentRoomNumber() > 10 && guess_wrong) { // if in bonus room and guess is wrong, end game

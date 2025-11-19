@@ -311,39 +311,4 @@ public class Simulation {
         };
         return pools[roomNum - 1];
     }
-    /*
-    //Console test - This can be ignored, just trying to see how it all looks.
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Simulation simulation = new Simulation();
-
-        System.out.print("Enter your name: ");
-        simulation.startGame(scanner.nextLine());
-
-        simulation.addBot("QuickBot");
-
-        while (simulation.getCurrentRoomNumber() <= 10) {
-            System.out.println("\n--- Room " + simulation.getCurrentRoomNumber() + " ---");
-            System.out.println(simulation.getCurrentRiddle());
-            System.out.print("Guess: ");
-
-            String guess = scanner.nextLine();
-
-            if (simulation.checkGuess(guess)) {
-                System.out.println("Correct!");
-
-                if (simulation.hasPlayerWon()) {
-                    System.out.println("YOU WON!");
-                    break;
-                }
-
-                simulation.moveToNextRoom();
-            } else {
-                System.out.println("Wrong! Try again.");
-            }
-        }
-
-        scanner.close();
-    }
-    */
 }

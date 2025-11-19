@@ -137,6 +137,11 @@ public class RoomHashMap {
         return capacity;
     }
 
+    /**
+     * takes in a room number as
+     * @param roomNumber
+     * @return
+     */
     public boolean containsKey(int roomNumber) {
         return get(roomNumber) != null;
     }
