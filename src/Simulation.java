@@ -56,6 +56,9 @@ public class Simulation {
         roomMap.put(20, new Room(20, "What has teeth but cannot bite?", "comb"));
     }
 
+    /**
+     * Finishes the game, calls the players finish game method
+     */
     public void finishGame() {
         player.finishGame();
     }
