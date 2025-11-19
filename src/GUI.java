@@ -26,7 +26,6 @@ public class GUI extends JFrame{
     private JButton button_submit;
     private JButton button_hint;
     private JButton button_skip;
-    private boolean guess_wrong;
 
     //CONSTRUCTOR
     public GUI() {
@@ -42,7 +41,6 @@ public class GUI extends JFrame{
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
-        guess_wrong = false;
     }
 
     //METHODS
@@ -87,35 +85,27 @@ public class GUI extends JFrame{
             String guess = field_answer.getText();
             boolean correct = sim.checkGuess(guess);
 
-
-            // If player has gone through 10 rooms, bonus room is activated (if they answer incorrectly, the game ends)
-            if (sim.getCurrentRoomNumber() > 10) {
-                if (!guess_wrong) {
+            //Checks to see if the guess was correct
+            
+            if (sim.hasPlayerWon()) {
+                sim.moveToNextRoom();
+                updateRoom();
+                //endGame();
+            } else {
+                if (correct) {
                     sim.moveToNextRoom();
                     updateRoom();
                 } else {
-                    endGame();
-                }
-                
-                if (sim.getCurrentRoomNumber() == 20 && sim.getCurrentRoom().isSolved()) {
-                 endGame();
-                }
-            }
-            
-            //Checks to see if the guess was correct
-            if (correct) {
-                sim.moveToNextRoom();
-                updateRoom();
-            } else {
-                guess_wrong = true;
-                field_answer.setText("");
-                label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
-                if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
-                    button_skip.setVisible(true);
+                    label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
+                    if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
+                        button_skip.setVisible(true);
+                    }
                 }      
             }
 
-
+            if (sim.getCurrentRoomNumber() == 20 && sim.getCurrentRoom().isSolved()) {
+                endGame();
+            }
 
         });
 
@@ -235,10 +225,9 @@ public class GUI extends JFrame{
         label_riddle.setText(sim.getCurrentRiddle());
         label_hint.setText("");
         label_incorrect.setText("Incorrect Guesses: 0");
-        guess_wrong = false;
 
         if (sim.getCurrentRoomNumber() > 10) {
-            label_bonus.setText("Bonus Room!!");
+            label_bonus.setText("Bonus Rooms Unlocked!!");
         }
     }
 
