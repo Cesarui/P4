@@ -19,12 +19,14 @@ public class GUI extends JFrame{
     private JLabel label_riddle;
     private JLabel label_hint;
     private JLabel label_incorrect;
+    private JLabel label_bonus;
     private JLabel label_player1;
     private JLabel label_bot1;
     private JLabel label_bot2;
     private JButton button_submit;
     private JButton button_hint;
     private JButton button_skip;
+    private boolean guess_wrong;
 
     //CONSTRUCTOR
     public GUI() {
@@ -36,9 +38,11 @@ public class GUI extends JFrame{
         label_riddle = new JLabel();
         label_hint = new JLabel();
         label_incorrect = new JLabel();
+        label_bonus = new JLabel();
         sim = new Simulation();
         setLayout(null);
         setVisible(true);
+        guess_wrong = false;
     }
 
     //METHODS
@@ -56,6 +60,7 @@ public class GUI extends JFrame{
 
         field_answer.setBounds(100, 400, 200, 25);
         label_room.setBounds(0, 0, 600, 25);
+        label_bonus.setBounds(70, 0, 150, 25);
         label_riddle.setBounds(200, 200, 600, 25);
         label_hint.setBounds(200, 300, 600, 25);
         label_incorrect.setBounds(100, 380, 200, 25);
@@ -74,6 +79,7 @@ public class GUI extends JFrame{
         add(label_riddle);
         add(label_hint);
         add(label_incorrect);
+        add(label_bonus);
 
         updateRoom();
         // Action listeners for buttons (If it's a new room set visible for skip button to false)
@@ -81,27 +87,35 @@ public class GUI extends JFrame{
             String guess = field_answer.getText();
             boolean correct = sim.checkGuess(guess);
 
-            //Checks to see if the guess was correct
-            
-            if (sim.hasPlayerWon()) {
-                sim.moveToNextRoom();
-                updateRoom();
-                //endGame();
-            } else {
-                if (correct) {
+
+            // If player has gone through 10 rooms, bonus room is activated (if they answer incorrectly, the game ends)
+            if (sim.getCurrentRoomNumber() > 10) {
+                if (!guess_wrong) {
                     sim.moveToNextRoom();
                     updateRoom();
                 } else {
-                    label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
-                    if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
-                        button_skip.setVisible(true);
-                    }
+                    endGame();
+                }
+                
+                if (sim.getCurrentRoomNumber() == 20 && sim.getCurrentRoom().isSolved()) {
+                 endGame();
+                }
+            }
+            
+            //Checks to see if the guess was correct
+            if (correct) {
+                sim.moveToNextRoom();
+                updateRoom();
+            } else {
+                guess_wrong = true;
+                field_answer.setText("");
+                label_incorrect.setText("Incorrect Guesses: " + sim.getPlayer().getNumOfIncorrectGuesses());
+                if (sim.getPlayer().getNumOfIncorrectGuesses() > 2) { // if number of incorrect guesses > 2, allow skip
+                    button_skip.setVisible(true);
                 }      
             }
 
-            if (sim.getCurrentRoomNumber() == 20 && sim.getCurrentRoom().isSolved()) {
-                endGame();
-            }
+
 
         });
 
@@ -141,6 +155,7 @@ public class GUI extends JFrame{
         remove(label_riddle);
         remove(label_hint);
         remove(label_incorrect);
+        remove(label_bonus);
 
         label_room.setText("Game Complete!");
         label_room.setBounds(250, 30, 300, 40);
@@ -220,6 +235,11 @@ public class GUI extends JFrame{
         label_riddle.setText(sim.getCurrentRiddle());
         label_hint.setText("");
         label_incorrect.setText("Incorrect Guesses: 0");
+        guess_wrong = false;
+
+        if (sim.getCurrentRoomNumber() > 10) {
+            label_bonus.setText("Bonus Room!!");
+        }
     }
 
     /**
